@@ -1,0 +1,63 @@
+ENTRAINEMENT MCTB - QUESTIONNAIRES
+==================================
+
+CONTENU DU DOSSIER
+------------------
+index.html            L'application.
+questionnaires.json   Les questions, generees depuis le classeur Excel.
+images/               Les illustrations des questions.
+manifest.json         Permet l'installation en icone sur telephone et PC.
+sw.js                 Fonctionnement hors connexion.
+icone-*.png           Icones de l'application.
+
+
+MISE EN LIGNE
+-------------
+Deposez tout le dossier sur un hebergement de pages web (Cloudflare Pages,
+Netlify ou equivalent). L'adresse obtenue est le lien a diffuser.
+
+Important : l'application ne fonctionne PAS par double-clic sur index.html.
+Les navigateurs interdisent la lecture de fichiers voisins en local. Il faut
+une adresse web, ou un serveur local.
+
+
+INSTALLATION SUR UN APPAREIL
+----------------------------
+Telephone Android : ouvrir le lien dans Chrome, menu, "Installer l'application".
+iPhone            : ouvrir dans Safari, bouton Partager, "Sur l'ecran d'accueil".
+PC                : ouvrir dans Chrome ou Edge, icone d'installation dans la
+                    barre d'adresse.
+
+Une fois installee, l'application fonctionne sans connexion.
+
+
+MODIFIER LES QUESTIONS
+----------------------
+Tout se passe dans le classeur MCTB_Banque_Questions.xlsx.
+
+1. Ajoutez ou modifiez les lignes de l'onglet Questions.
+2. Pour un nouveau questionnaire, ajoutez-le d'abord dans l'onglet
+   Questionnaires, il apparaitra alors dans la liste deroulante.
+3. Regenerez questionnaires.json (voir le convertisseur).
+4. Remplacez le fichier sur l'hebergement.
+5. Dans sw.js, changez "mctb-quiz-v1" en "mctb-quiz-v2" pour que les
+   appareils deja installes recuperent la nouvelle version.
+
+Colonne "Questions a tirer" de l'onglet Questionnaires :
+   0  = toutes les questions, dans un ordre melange
+   15 = 15 questions tirees au hasard a chaque passage
+
+Colonne "Actif" : mettez "non" pour retirer un questionnaire de l'affichage
+sans le supprimer du classeur.
+
+
+CE QUE FAIT L'APPLICATION
+-------------------------
+- Ordre des questions et des reponses melange a chaque passage.
+- Correction et explication affichees apres chaque reponse.
+- Progression conservee : on peut reprendre un questionnaire interrompu.
+- Recapitulatif complet en fin de parcours, envoi du score par e-mail.
+- Navigation au clavier sur PC : touches 1 a 4, puis Entree.
+
+Les resultats restent sur l'appareil de chaque utilisateur. Rien n'est
+transmis a un serveur.

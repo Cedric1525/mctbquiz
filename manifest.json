@@ -1,0 +1,17 @@
+{
+  "name": "Entraînement MCTB",
+  "short_name": "MCTB Quiz",
+  "description": "Questionnaires d'entraînement aux diagnostics immobiliers",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#eef4f7",
+  "theme_color": "#244b66",
+  "lang": "fr",
+  "icons": [
+    { "src": "icone-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icone-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icone-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

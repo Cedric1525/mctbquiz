@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#244b66">
+<title>Entraînement MCTB</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icone-192.png">
+<link rel="apple-touch-icon" href="icone-192.png">
+<style>
+:root{
+  --blue:#244b66; --blue2:#17384d; --blue3:#2d5f80;
+  --orange:#f2a100; --orange2:#d68e00; --orange-pale:#fff8e8;
+  --bg:#eef4f7; --line:#d5e1e7; --text:#1c2a33; --muted:#667984;
+  --good:#18774b; --good-bg:#e8f5ee; --bad:#c63a3a; --bad-bg:#fdeeee;
+  --white:#fff; --shadow:0 1px 3px rgba(23,56,77,.10);
+  --pad:clamp(16px,4vw,28px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  background:var(--bg); color:var(--text); line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+.wrap{max-width:780px;margin:0 auto;padding:0 var(--pad) 48px}
+
+/* ---------- barre superieure ---------- */
+.top{background:var(--blue);color:#fff;padding:env(safe-area-inset-top) 0 0}
+.top-in{max-width:780px;margin:0 auto;padding:14px var(--pad);display:flex;align-items:center;gap:12px}
+.mark{width:34px;height:34px;border-radius:8px;background:var(--white);color:var(--blue);
+  display:grid;place-items:center;font-weight:800;font-size:18px;flex:0 0 auto;
+  box-shadow:inset 0 -6px 0 var(--orange)}
+.top h1{font-size:16px;font-weight:600;margin:0;letter-spacing:.2px}
+.top .sub{font-size:12px;color:#c2d6e1;margin:0}
+.top-act{margin-left:auto;display:flex;gap:8px}
+.tbtn{padding:7px 12px;border-radius:8px;background:rgba(255,255,255,.12);
+  font-size:13px;color:#fff;border:1px solid rgba(255,255,255,.18)}
+.tbtn:hover{background:rgba(255,255,255,.2)}
+
+/* ---------- accueil ---------- */
+.intro{margin:26px 0 6px}
+.intro h2{font-size:clamp(22px,5vw,28px);margin:0 0 6px;color:var(--blue2);letter-spacing:-.3px}
+.intro p{margin:0;color:var(--muted);font-size:15px;max-width:60ch}
+
+.ident{background:var(--white);border:1px solid var(--line);border-radius:12px;
+  padding:16px;margin:20px 0;box-shadow:var(--shadow)}
+.ident .row{display:flex;gap:12px;flex-wrap:wrap}
+.ident label{flex:1 1 180px;font-size:13px;font-weight:600;color:var(--blue2)}
+.ident input{width:100%;margin-top:5px;padding:11px 12px;border:1px solid var(--line);
+  border-radius:9px;font-size:16px;background:var(--bg);color:var(--text)}
+.ident input:focus{background:var(--white);border-color:var(--blue3);outline:none;
+  box-shadow:0 0 0 3px rgba(45,95,128,.15)}
+.ident .note{margin:11px 0 0;font-size:12.5px;color:var(--muted)}
+
+.mods{display:grid;gap:14px;margin-top:20px}
+@media(min-width:720px){.mods{grid-template-columns:1fr 1fr}}
+.mod{background:var(--white);border:1px solid var(--line);border-radius:12px;
+  overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column}
+.mod-bar{height:4px;background:var(--blue)}
+.mod.done .mod-bar{background:var(--good)}
+.mod.fail .mod-bar{background:var(--orange)}
+.mod-in{padding:16px;display:flex;flex-direction:column;flex:1}
+.mod h3{margin:0 0 7px;font-size:17px;color:var(--blue2);line-height:1.3}
+.mod .desc{margin:0 0 13px;font-size:13.5px;color:var(--muted);flex:1}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:13px}
+.tag{font-size:12px;padding:3px 9px;border-radius:20px;background:var(--bg);
+  color:var(--blue2);border:1px solid var(--line)}
+.state{font-size:13px;font-weight:600;margin-bottom:11px}
+.state.none{color:var(--muted)}
+.state.wip{color:var(--orange2)}
+.state.ok{color:var(--good)}
+.state.ko{color:var(--bad)}
+.go{width:100%;padding:12px;border-radius:9px;background:var(--orange);color:#fff;
+  font-weight:700;font-size:15px;transition:background .15s}
+.go:hover{background:var(--orange2)}
+.go.sec{background:var(--white);color:var(--blue);border:1.5px solid var(--blue)}
+.go.sec:hover{background:var(--bg)}
+.mod-alt{margin-top:8px}
+
+/* ---------- questionnaire ---------- */
+.qhead{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding:14px 0 11px;border-bottom:1px solid var(--line)}
+.qmeta{display:flex;justify-content:space-between;align-items:baseline;
+  font-size:13px;color:var(--muted);margin-bottom:8px;gap:12px}
+.qmeta b{color:var(--blue2);font-size:15px}
+.bar{height:6px;background:var(--line);border-radius:4px;overflow:hidden}
+.bar span{display:block;height:100%;background:var(--orange);border-radius:4px;
+  transition:width .3s ease}
+
+.card{background:var(--white);border:1px solid var(--line);border-radius:12px;
+  padding:var(--pad);margin-top:18px;box-shadow:var(--shadow)}
+.theme{font-size:12.5px;color:var(--orange2);font-weight:700;margin-bottom:7px}
+.q{font-size:clamp(17px,4.2vw,20px);font-weight:600;color:var(--blue2);
+  margin:0 0 15px;line-height:1.4}
+.qimg{width:100%;border:1px solid var(--line);border-radius:9px;margin-bottom:15px;
+  display:block;background:var(--bg);cursor:zoom-in}
+.hint{font-size:13px;color:var(--muted);margin:-7px 0 13px}
+
+.opts{display:grid;gap:9px}
+.opt{display:flex;gap:11px;align-items:flex-start;width:100%;text-align:left;
+  padding:13px 14px;border:1.5px solid var(--line);border-radius:10px;
+  background:var(--white);font-size:15.5px;line-height:1.4;transition:border-color .12s,background .12s}
+.opt:hover:not(:disabled){border-color:var(--blue3);background:var(--bg)}
+.opt:disabled{cursor:default}
+.box{flex:0 0 auto;width:25px;height:25px;border:1.5px solid var(--muted);
+  display:grid;place-items:center;font-size:13px;font-weight:700;color:var(--muted);
+  background:var(--white)}
+.opt.multi .box{border-radius:6px}
+.opt:not(.multi) .box{border-radius:50%}
+.opt.sel{border-color:var(--blue);background:#f2f7fa}
+.opt.sel .box{background:var(--blue);border-color:var(--blue);color:#fff}
+.opt.ok{border-color:var(--good);background:var(--good-bg)}
+.opt.ok .box{background:var(--good);border-color:var(--good);color:#fff}
+.opt.ko{border-color:var(--bad);background:var(--bad-bg)}
+.opt.ko .box{background:var(--bad);border-color:var(--bad);color:#fff}
+.opt.miss{border-color:var(--good);border-style:dashed;background:var(--good-bg)}
+
+.verdict{margin-top:15px;padding:14px;border-radius:10px;border-left:4px solid}
+.verdict.ok{background:var(--good-bg);border-color:var(--good)}
+.verdict.ko{background:var(--bad-bg);border-color:var(--bad)}
+.verdict h4{margin:0 0 5px;font-size:15px}
+.verdict.ok h4{color:var(--good)}
+.verdict.ko h4{color:var(--bad)}
+.verdict p{margin:0;font-size:14.5px;line-height:1.55}
+
+.acts{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.acts button{flex:1 1 150px;padding:13px;border-radius:9px;font-weight:700;font-size:15px}
+.prim{background:var(--orange);color:#fff}
+.prim:hover{background:var(--orange2)}
+.prim:disabled{background:#cfdae1;color:#8fa3b0;cursor:not-allowed}
+.ghost{background:var(--white);color:var(--blue);border:1.5px solid var(--line)}
+.ghost:hover{border-color:var(--blue3)}
+.kbd{margin-top:12px;font-size:12.5px;color:var(--muted);text-align:center}
+@media(max-width:640px){.kbd{display:none}}
+
+/* ---------- resultat ---------- */
+.score{background:var(--white);border:1px solid var(--line);border-radius:12px;
+  padding:28px var(--pad);text-align:center;margin-top:22px;box-shadow:var(--shadow)}
+.dial{width:132px;height:132px;margin:0 auto 14px;position:relative}
+.dial svg{transform:rotate(-90deg)}
+.dial .val{position:absolute;inset:0;display:grid;place-items:center;
+  font-size:31px;font-weight:800;color:var(--blue2)}
+.score h2{margin:0 0 6px;font-size:22px;color:var(--blue2)}
+.score .line{color:var(--muted);font-size:15px;margin:0 0 4px}
+.badge{display:inline-block;margin-top:11px;padding:7px 17px;border-radius:22px;
+  font-weight:700;font-size:14px}
+.badge.ok{background:var(--good-bg);color:var(--good)}
+.badge.ko{background:var(--orange-pale);color:var(--orange2)}
+
+.review{margin-top:22px}
+.review h3{font-size:16px;color:var(--blue2);margin:0 0 11px}
+.item{background:var(--white);border:1px solid var(--line);border-left:4px solid;
+  border-radius:9px;padding:13px 15px;margin-bottom:9px}
+.item.ok{border-left-color:var(--good)}
+.item.ko{border-left-color:var(--bad)}
+.item .qq{font-weight:600;font-size:14.5px;color:var(--blue2);margin-bottom:6px}
+.item .aa{font-size:13.5px;color:var(--muted);margin:2px 0}
+.item .aa b{color:var(--good);font-weight:600}
+.item .aa.wrong b{color:var(--bad)}
+.item .ee{font-size:13.5px;margin-top:7px;padding-top:7px;border-top:1px dashed var(--line);color:var(--text)}
+
+/* ---------- divers ---------- */
+.lightbox{position:fixed;inset:0;background:rgba(23,56,77,.93);z-index:50;
+  display:none;place-items:center;padding:20px;cursor:zoom-out}
+.lightbox.on{display:grid}
+.lightbox img{max-width:100%;max-height:92vh;border-radius:8px}
+.foot{text-align:center;font-size:12.5px;color:var(--muted);margin-top:30px}
+.err{background:var(--bad-bg);border:1px solid var(--bad);border-radius:10px;
+  padding:16px;margin-top:22px;color:var(--bad);font-size:14.5px}
+.hide{display:none!important}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media print{.top-act,.acts,.kbd{display:none}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-in">
+    <div class="mark">M</div>
+    <div>
+      <h1>Entraînement MCTB</h1>
+      <p class="sub" id="subtitle">Diagnostic de performance énergétique</p>
+    </div>
+    <div class="top-act">
+      <button class="tbtn hide" id="btnQuit">Quitter</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap" id="app">
+  <p style="margin-top:40px;color:var(--muted)">Chargement des questionnaires…</p>
+</main>
+
+<div class="lightbox" id="lightbox"><img alt="" id="lightboxImg"></div>
+
+<script>
+"use strict";
+
+const CLE = "mctb_quiz_v1";
+let DATA = null, S = null;
+
+/* ---------- stockage local ---------- */
+function lire(){ try{ return JSON.parse(localStorage.getItem(CLE)) || {}; }catch(e){ return {}; } }
+function ecrire(o){ try{ localStorage.setItem(CLE, JSON.stringify(o)); }catch(e){} }
+function idPersonne(){
+  const s = lire();
+  return ((s.prenom||"") + "|" + (s.nom||"")).toLowerCase().trim();
+}
+function etatModule(i){
+  const s = lire();
+  return (s.modules && s.modules[idPersonne()+"|"+i]) || null;
+}
+function majModule(i, val){
+  const s = lire();
+  s.modules = s.modules || {};
+  const k = idPersonne()+"|"+i;
+  if (val === null) delete s.modules[k]; else s.modules[k] = val;
+  ecrire(s);
+}
+
+/* ---------- utilitaires ---------- */
+const $ = sel => document.querySelector(sel);
+const esc = t => String(t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const LETTRES = "ABCD";
+
+function melanger(arr){
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+/* Melange les questions ET les options, en suivant les bonnes reponses. */
+function preparer(mod){
+  let idx = mod.questions.map((_, i) => i);
+  idx = melanger(idx);
+  if (mod.tirage > 0 && mod.tirage < idx.length) idx = idx.slice(0, mod.tirage);
+  return idx.map(i => {
+    const q = mod.questions[i];
+    const ordre = melanger(q.o.map((_, k) => k));
+    return {
+      t: q.t, q: q.q, e: q.e, i: q.i, m: q.m, n: q.n,
+      o: ordre.map(k => q.o[k]),
+      r: ordre.map((k, pos) => q.r.includes(k) ? pos : -1).filter(p => p >= 0).sort((a,b)=>a-b)
+    };
+  });
+}
+
+/* ---------- ecran d'accueil ---------- */
+function accueil(){
+  $("#btnQuit").classList.add("hide");
+  const s = lire();
+  const nomOk = (s.prenom||"").trim() && (s.nom||"").trim();
+
+  let html = `
+  <section class="intro">
+    <h2>Testez vos connaissances</h2>
+    <p>Trois questionnaires indépendants. Les questions sont tirées dans un ordre différent
+       à chaque passage, et la correction s'affiche après chaque réponse.</p>
+  </section>
+
+  <div class="ident">
+    <div class="row">
+      <label>Prénom<input id="fPrenom" value="${esc(s.prenom||"")}" autocomplete="given-name" placeholder="Votre prénom"></label>
+      <label>Nom<input id="fNom" value="${esc(s.nom||"")}" autocomplete="family-name" placeholder="Votre nom"></label>
+    </div>
+    <p class="note">Vos résultats restent sur cet appareil. Ils ne sont transmis à personne.</p>
+  </div>
+
+  <div class="mods">`;
+
+  DATA.modules.forEach((m, i) => {
+    const e = nomOk ? etatModule(i) : null;
+    let cls = "", etat = `<span class="state none">Non commencé</span>`, libelle = "Commencer", alt = "";
+
+    if (e && e.fini){
+      const pct = Math.round(e.score / e.total * 100);
+      const reussi = pct >= m.seuil;
+      cls = reussi ? "done" : "fail";
+      etat = `<span class="state ${reussi?'ok':'ko'}">${reussi?'Réussi':'À revoir'} — ${pct} % (${e.score}/${e.total})</span>`;
+      libelle = "Recommencer";
+    } else if (e && e.pos > 0){
+      cls = "fail";
+      etat = `<span class="state wip">En cours — question ${e.pos+1} sur ${e.liste.length}</span>`;
+      libelle = "Reprendre";
+      alt = `<button class="go sec mod-alt" data-neuf="${i}">Repartir de zéro</button>`;
+    }
+
+    const nb = m.tirage > 0 ? `${m.tirage} sur ${m.questions.length}` : `${m.questions.length} questions`;
+    html += `
+    <article class="mod ${cls}">
+      <div class="mod-bar"></div>
+      <div class="mod-in">
+        <h3>${esc(m.nom)}</h3>
+        <p class="desc">${esc(m.description)}</p>
+        <div class="tags"><span class="tag">${nb}</span><span class="tag">Seuil ${m.seuil} %</span></div>
+        ${etat}
+        <button class="go" data-mod="${i}">${libelle}</button>
+        ${alt}
+      </div>
+    </article>`;
+  });
+
+  html += `</div>
+  <p class="foot">MCTB — Entraînement interne. ${DATA.modules.reduce((a,m)=>a+m.questions.length,0)} questions au total.</p>`;
+
+  $("#app").innerHTML = html;
+
+  const sauverIdent = () => {
+    const st = lire();
+    st.prenom = $("#fPrenom").value.trim();
+    st.nom = $("#fNom").value.trim();
+    ecrire(st);
+  };
+  $("#fPrenom").addEventListener("input", sauverIdent);
+  $("#fNom").addEventListener("input", sauverIdent);
+  $("#fPrenom").addEventListener("change", accueil);
+  $("#fNom").addEventListener("change", accueil);
+
+  document.querySelectorAll("[data-mod]").forEach(b => {
+    b.addEventListener("click", () => {
+      sauverIdent();
+      if (!lire().prenom || !lire().nom){
+        alert("Indiquez votre prénom et votre nom avant de commencer.");
+        $("#fPrenom").focus();
+        return;
+      }
+      lancer(+b.dataset.mod, false);
+    });
+  });
+  document.querySelectorAll("[data-neuf]").forEach(b => {
+    b.addEventListener("click", () => { sauverIdent(); lancer(+b.dataset.neuf, true); });
+  });
+}
+
+/* ---------- deroulement ---------- */
+function lancer(i, neuf){
+  const m = DATA.modules[i];
+  let e = neuf ? null : etatModule(i);
+  if (e && e.fini) e = null;
+
+  if (e && e.liste){
+    S = { mod:i, liste:e.liste, pos:e.pos, score:e.score, hist:e.hist||[], choix:[], valide:false };
+  } else {
+    S = { mod:i, liste:preparer(m), pos:0, score:0, hist:[], choix:[], valide:false };
+  }
+  sauver();
+  $("#btnQuit").classList.remove("hide");
+  question();
+}
+
+function sauver(){
+  if (!S) return;
+  majModule(S.mod, { liste:S.liste, pos:S.pos, score:S.score, hist:S.hist, fini:false });
+}
+
+function question(){
+  const m = DATA.modules[S.mod];
+  const q = S.liste[S.pos];
+  S.choix = []; S.valide = false;
+
+  $("#subtitle").textContent = m.nom;
+
+  $("#app").innerHTML = `
+  <div class="qhead">
+    <div class="qmeta">
+      <span><b>Question ${S.pos+1}</b> sur ${S.liste.length}</span>
+      <span>${S.score} bonne${S.score>1?'s':''} réponse${S.score>1?'s':''}</span>
+    </div>
+    <div class="bar"><span style="width:${S.pos/S.liste.length*100}%"></span></div>
+  </div>
+
+  <div class="card">
+    <div class="theme">${esc(q.t)}</div>
+    <h2 class="q">${esc(q.q)}</h2>
+    ${q.i ? `<img class="qimg" src="images/${esc(q.i)}" alt="Illustration de la question" loading="lazy" id="qimg">` : ``}
+    ${q.m ? `<p class="hint">Plusieurs réponses sont attendues.</p>` : ``}
+    <div class="opts" id="opts">
+      ${q.o.map((o,k) => `
+        <button class="opt ${q.m?'multi':''}" data-k="${k}">
+          <span class="box">${q.m ? '' : LETTRES[k]}</span>
+          <span>${esc(o)}</span>
+        </button>`).join("")}
+    </div>
+    <div id="verdict"></div>
+    <div class="acts">
+      <button class="prim" id="btnGo" disabled>Valider</button>
+    </div>
+    <p class="kbd">Touches 1 à ${q.o.length} pour choisir, Entrée pour valider.</p>
+  </div>`;
+
+  document.querySelectorAll(".opt").forEach(b => b.addEventListener("click", () => choisir(+b.dataset.k)));
+  const img = $("#qimg");
+  if (img) img.addEventListener("click", () => {
+    $("#lightboxImg").src = img.src;
+    $("#lightbox").classList.add("on");
+  });
+  $("#btnGo").addEventListener("click", () => S.valide ? suivant() : valider());
+  window.scrollTo(0,0);
+}
+
+function choisir(k){
+  if (S.valide) return;
+  const q = S.liste[S.pos];
+  if (q.m){
+    const p = S.choix.indexOf(k);
+    if (p >= 0) S.choix.splice(p,1); else S.choix.push(k);
+  } else {
+    S.choix = [k];
+  }
+  document.querySelectorAll(".opt").forEach((b,i) => b.classList.toggle("sel", S.choix.includes(i)));
+  $("#btnGo").disabled = S.choix.length === 0;
+}
+
+function valider(){
+  const q = S.liste[S.pos];
+  const mien = S.choix.slice().sort((a,b)=>a-b);
+  const bon = mien.length === q.r.length && mien.every((v,i) => v === q.r[i]);
+  if (bon) S.score++;
+  S.valide = true;
+
+  document.querySelectorAll(".opt").forEach((b,i) => {
+    b.disabled = true;
+    b.classList.remove("sel");
+    const estBon = q.r.includes(i), choisi = S.choix.includes(i);
+    const boite = b.querySelector(".box");
+    if (choisi && estBon){ b.classList.add("ok"); boite.textContent = "✓"; }
+    else if (choisi && !estBon){ b.classList.add("ko"); boite.textContent = "✕"; }
+    else if (!choisi && estBon){ b.classList.add("miss"); boite.textContent = "✓"; }
+  });
+
+  $("#verdict").innerHTML = `
+    <div class="verdict ${bon?'ok':'ko'}">
+      <h4>${bon ? "Bonne réponse" : "Réponse incorrecte"}</h4>
+      <p>${esc(q.e)}</p>
+    </div>`;
+
+  S.hist.push({ q:q.q, e:q.e, bon:bon,
+                mien: mien.map(i=>q.o[i]).join(" · ") || "aucune réponse",
+                vrai: q.r.map(i=>q.o[i]).join(" · ") });
+
+  const dernier = S.pos === S.liste.length - 1;
+  $("#btnGo").textContent = dernier ? "Voir mon résultat" : "Question suivante";
+  $("#btnGo").disabled = false;
+  $("#btnGo").focus();
+  sauver();
+}
+
+function suivant(){
+  S.pos++;
+  if (S.pos >= S.liste.length) return resultat();
+  sauver();
+  question();
+}
+
+/* ---------- resultat ---------- */
+function resultat(){
+  const m = DATA.modules[S.mod];
+  const total = S.liste.length;
+  const pct = Math.round(S.score / total * 100);
+  const reussi = pct >= m.seuil;
+
+  majModule(S.mod, { fini:true, score:S.score, total:total, hist:S.hist, pos:0, liste:null });
+  $("#btnQuit").classList.add("hide");
+  $("#subtitle").textContent = "Résultat";
+
+  const R = 58, circ = 2 * Math.PI * R;
+  const s = lire();
+
+  $("#app").innerHTML = `
+  <div class="score">
+    <div class="dial">
+      <svg width="132" height="132" viewBox="0 0 132 132" aria-hidden="true">
+        <circle cx="66" cy="66" r="${R}" fill="none" stroke="#d5e1e7" stroke-width="11"/>
+        <circle cx="66" cy="66" r="${R}" fill="none" stroke="${reussi?'#18774b':'#f2a100'}"
+          stroke-width="11" stroke-linecap="round"
+          stroke-dasharray="${circ}" stroke-dashoffset="${circ*(1-pct/100)}"/>
+      </svg>
+      <div class="val">${pct} %</div>
+    </div>
+    <h2>${esc(m.nom)}</h2>
+    <p class="line">${S.score} bonne${S.score>1?'s':''} réponse${S.score>1?'s':''} sur ${total}</p>
+    <p class="line">${esc(s.prenom||"")} ${esc(s.nom||"")}</p>
+    <span class="badge ${reussi?'ok':'ko'}">${reussi ? `Seuil de ${m.seuil} % atteint` : `Seuil de ${m.seuil} % non atteint`}</span>
+    <div class="acts" style="margin-top:20px">
+      <button class="prim" id="btnMail">Envoyer par e-mail</button>
+      <button class="ghost" id="btnHome">Retour aux questionnaires</button>
+    </div>
+  </div>
+
+  <section class="review">
+    <h3>Le détail de vos réponses</h3>
+    ${S.hist.map((h,i) => `
+      <div class="item ${h.bon?'ok':'ko'}">
+        <div class="qq">${i+1}. ${esc(h.q)}</div>
+        ${h.bon
+          ? `<p class="aa">Votre réponse : <b>${esc(h.mien)}</b></p>`
+          : `<p class="aa wrong">Votre réponse : <b>${esc(h.mien)}</b></p>
+             <p class="aa">Réponse attendue : <b>${esc(h.vrai)}</b></p>`}
+        <p class="ee">${esc(h.e)}</p>
+      </div>`).join("")}
+  </section>`;
+
+  $("#btnHome").addEventListener("click", () => { S = null; $("#subtitle").textContent = "Diagnostic de performance énergétique"; accueil(); });
+  $("#btnMail").addEventListener("click", () => envoyerMail(m, pct, total, reussi));
+  window.scrollTo(0,0);
+}
+
+function envoyerMail(m, pct, total, reussi){
+  const s = lire();
+  const rates = S.hist.filter(h => !h.bon);
+  const sujet = `Entraînement MCTB — ${m.nom} — ${pct} %`;
+  let corps =
+    `${s.prenom} ${s.nom}\n` +
+    `Questionnaire : ${m.nom}\n` +
+    `Score : ${S.score}/${total} (${pct} %) — seuil ${m.seuil} % ${reussi ? "atteint" : "non atteint"}\n` +
+    `Date : ${new Date().toLocaleDateString("fr-FR")}\n`;
+  if (rates.length){
+    corps += `\nQuestions manquées (${rates.length}) :\n`;
+    rates.forEach((h,i) => { corps += `${i+1}. ${h.q}\n`; });
+  } else {
+    corps += `\nAucune erreur.\n`;
+  }
+  const url = `mailto:?subject=${encodeURIComponent(sujet)}&body=${encodeURIComponent(corps)}`;
+  if (url.length > 1800){
+    // mailto tronque au-dela d'environ 2000 caracteres selon les clients
+    const court = corps.split("\n").slice(0,5).join("\n") + `\n\n${rates.length} question(s) manquée(s). Le détail reste consultable à l'écran.`;
+    window.location.href = `mailto:?subject=${encodeURIComponent(sujet)}&body=${encodeURIComponent(court)}`;
+  } else {
+    window.location.href = url;
+  }
+}
+
+/* ---------- clavier ---------- */
+document.addEventListener("keydown", ev => {
+  if ($("#lightbox").classList.contains("on")){
+    if (ev.key === "Escape") $("#lightbox").classList.remove("on");
+    return;
+  }
+  if (!S || !S.liste) return;
+  const q = S.liste[S.pos];
+  if (ev.key >= "1" && ev.key <= "4"){
+    const k = +ev.key - 1;
+    if (k < q.o.length && !S.valide){ choisir(k); ev.preventDefault(); }
+  } else if (ev.key === "Enter"){
+    const b = $("#btnGo");
+    if (b && !b.disabled){ b.click(); ev.preventDefault(); }
+  }
+});
+
+$("#lightbox").addEventListener("click", () => $("#lightbox").classList.remove("on"));
+$("#btnQuit").addEventListener("click", () => {
+  if (confirm("Quitter ce questionnaire ? Votre progression est conservée.")){
+    S = null;
+    $("#subtitle").textContent = "Diagnostic de performance énergétique";
+    accueil();
+  }
+});
+
+/* ---------- demarrage ---------- */
+fetch("questionnaires.json")
+  .then(r => { if (!r.ok) throw new Error("fichier introuvable"); return r.json(); })
+  .then(d => {
+    DATA = d;
+    if (!DATA.modules || !DATA.modules.length) throw new Error("aucun questionnaire actif");
+    accueil();
+  })
+  .catch(e => {
+    $("#app").innerHTML = `<div class="err">
+      <b>Les questionnaires n'ont pas pu être chargés.</b><br><br>
+      Vérifiez que le fichier <code>questionnaires.json</code> se trouve à côté de cette page.<br>
+      Si vous avez ouvert le fichier par un double-clic depuis l'explorateur, passez par
+      l'adresse web de l'application : les navigateurs bloquent la lecture de fichiers en local.
+      <br><br><span style="font-size:13px;opacity:.8">Détail technique : ${esc(e.message)}</span>
+    </div>`;
+  });
+
+if ("serviceWorker" in navigator){
+  window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(()=>{}));
+}
+</script>
+</body>
+</html>
