@@ -1,5 +1,5 @@
 ENTRAINEMENT MCTB - QUESTIONNAIRES
-Version 2 - 5 questionnaires, 114 questions
+Version 3 - 5 questionnaires, 114 questions
 ===========================================
 
 CONTENU DU DOSSIER
@@ -22,6 +22,9 @@ NOUVEAUTES DE LA VERSION 2
   et un JSON (pour une future page de synthese d'equipe).
 - Correction du chargement des images, qui laissait apparaitre
   brievement celle de la question precedente.
+- Correction de trois images decalees (schemas CET, thermostat,
+  schemas d'immeubles) : chaque fichier portait l'illustration de la
+  question precedente. Les 14 images ont ete verifiees une par une.
 - Quatre questions a choix multiples ont ete revues : toutes leurs
   options etaient correctes, ce qui ne testait rien.
 
@@ -30,7 +33,7 @@ MISE A JOUR SUR GITHUB
 ----------------------
 Remplacez dans le depot : index.html, questionnaires.json, sw.js et le
 dossier images. Le numero de cache dans sw.js est deja passe a
-"mctb-quiz-v2" : les appareils deja installes recuperent la nouvelle
+"mctb-quiz-v3" : les appareils deja installes recuperent la nouvelle
 version a la prochaine ouverture connectee.
 
 A chaque nouvelle mise a jour, incrementez ce numero (v3, v4...).
