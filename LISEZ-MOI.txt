@@ -1,5 +1,6 @@
 ENTRAINEMENT MCTB - QUESTIONNAIRES
-==================================
+Version 2 - 5 questionnaires, 114 questions
+===========================================
 
 CONTENU DU DOSSIER
 ------------------
@@ -11,53 +12,55 @@ sw.js                 Fonctionnement hors connexion.
 icone-*.png           Icones de l'application.
 
 
-MISE EN LIGNE
--------------
-Deposez tout le dossier sur un hebergement de pages web (Cloudflare Pages,
-Netlify ou equivalent). L'adresse obtenue est le lien a diffuser.
+NOUVEAUTES DE LA VERSION 2
+--------------------------
+- Deux questionnaires d'audit energetique (43 questions).
+- Le mail de resultat indique, pour chaque question ratee, la reponse
+  donnee et la reponse attendue. Au-dela de six erreurs il bascule en
+  resume, car les clients de messagerie tronquent les longs messages.
+- Bouton "Telecharger le detail" : produit un CSV (ouvrable dans Excel)
+  et un JSON (pour une future page de synthese d'equipe).
+- Correction du chargement des images, qui laissait apparaitre
+  brievement celle de la question precedente.
+- Quatre questions a choix multiples ont ete revues : toutes leurs
+  options etaient correctes, ce qui ne testait rien.
 
-Important : l'application ne fonctionne PAS par double-clic sur index.html.
-Les navigateurs interdisent la lecture de fichiers voisins en local. Il faut
-une adresse web, ou un serveur local.
 
+MISE A JOUR SUR GITHUB
+----------------------
+Remplacez dans le depot : index.html, questionnaires.json, sw.js et le
+dossier images. Le numero de cache dans sw.js est deja passe a
+"mctb-quiz-v2" : les appareils deja installes recuperent la nouvelle
+version a la prochaine ouverture connectee.
 
-INSTALLATION SUR UN APPAREIL
-----------------------------
-Telephone Android : ouvrir le lien dans Chrome, menu, "Installer l'application".
-iPhone            : ouvrir dans Safari, bouton Partager, "Sur l'ecran d'accueil".
-PC                : ouvrir dans Chrome ou Edge, icone d'installation dans la
-                    barre d'adresse.
-
-Une fois installee, l'application fonctionne sans connexion.
+A chaque nouvelle mise a jour, incrementez ce numero (v3, v4...).
 
 
 MODIFIER LES QUESTIONS
 ----------------------
-Tout se passe dans le classeur MCTB_Banque_Questions.xlsx.
+Tout se passe dans MCTB_Banque_Questions.xlsx.
 
 1. Ajoutez ou modifiez les lignes de l'onglet Questions.
-2. Pour un nouveau questionnaire, ajoutez-le d'abord dans l'onglet
-   Questionnaires, il apparaitra alors dans la liste deroulante.
-3. Regenerez questionnaires.json (voir le convertisseur).
-4. Remplacez le fichier sur l'hebergement.
-5. Dans sw.js, changez "mctb-quiz-v1" en "mctb-quiz-v2" pour que les
-   appareils deja installes recuperent la nouvelle version.
+2. Pour un nouveau questionnaire, declarez-le d'abord dans l'onglet
+   Questionnaires : il apparaitra alors dans la liste deroulante.
+3. Regenerez questionnaires.json.
+4. Remplacez le fichier sur GitHub et incrementez le cache dans sw.js.
 
-Colonne "Questions a tirer" de l'onglet Questionnaires :
+Colonne "Questions a tirer" :
    0  = toutes les questions, dans un ordre melange
    15 = 15 questions tirees au hasard a chaque passage
 
-Colonne "Actif" : mettez "non" pour retirer un questionnaire de l'affichage
-sans le supprimer du classeur.
+Colonne "Actif" : "non" retire un questionnaire de l'affichage sans le
+supprimer du classeur.
 
 
-CE QUE FAIT L'APPLICATION
--------------------------
-- Ordre des questions et des reponses melange a chaque passage.
-- Correction et explication affichees apres chaque reponse.
-- Progression conservee : on peut reprendre un questionnaire interrompu.
-- Recapitulatif complet en fin de parcours, envoi du score par e-mail.
-- Navigation au clavier sur PC : touches 1 a 4, puis Entree.
-
-Les resultats restent sur l'appareil de chaque utilisateur. Rien n'est
-transmis a un serveur.
+POINTS DE VIGILANCE POUR LA REDACTION
+-------------------------------------
+- Sur un Vrai/Faux, l'enonce ne doit pas etre absolu si l'explication
+  est conditionnelle ("lorsque", "si", "sauf"). Sinon, le candidat qui
+  connait les exceptions est penalise.
+- Sur une question a choix multiples, au moins une option doit etre
+  fausse : sinon tout cocher donne toujours la bonne reponse.
+- Les lettres de la colonne Reponses designent les lignes du tableau,
+  pas ce que voit le technicien : l'application melange l'ordre des
+  options a chaque passage, en suivant les textes.

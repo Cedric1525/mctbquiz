@@ -1,6 +1,6 @@
 /* Service worker : rend l'application utilisable hors connexion.
    Changez CACHE a chaque mise a jour du contenu pour forcer le rafraichissement. */
-const CACHE = "mctb-quiz-v1";
+const CACHE = "mctb-quiz-v2";
 const BASE = [
   "./", "./index.html", "./questionnaires.json", "./manifest.json",
   "./icone-192.png", "./icone-512.png"

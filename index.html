@@ -96,8 +96,9 @@ button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
 .theme{font-size:12.5px;color:var(--orange2);font-weight:700;margin-bottom:7px}
 .q{font-size:clamp(17px,4.2vw,20px);font-weight:600;color:var(--blue2);
   margin:0 0 15px;line-height:1.4}
-.qimg{width:100%;border:1px solid var(--line);border-radius:9px;margin-bottom:15px;
-  display:block;background:var(--bg);cursor:zoom-in}
+.imgbox{border:1px solid var(--line);border-radius:9px;margin-bottom:15px;
+  background:var(--bg);overflow:hidden;min-height:120px;display:grid;place-items:center}
+.qimg{width:100%;display:block;cursor:zoom-in}
 .hint{font-size:13px;color:var(--muted);margin:-7px 0 13px}
 
 .opts{display:grid;gap:9px}
@@ -183,7 +184,7 @@ button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
     <div class="mark">M</div>
     <div>
       <h1>Entraînement MCTB</h1>
-      <p class="sub" id="subtitle">Diagnostic de performance énergétique</p>
+      <p class="sub" id="subtitle">DPE et audit énergétique</p>
     </div>
     <div class="top-act">
       <button class="tbtn hide" id="btnQuit">Quitter</button>
@@ -261,7 +262,7 @@ function accueil(){
   let html = `
   <section class="intro">
     <h2>Testez vos connaissances</h2>
-    <p>Trois questionnaires indépendants. Les questions sont tirées dans un ordre différent
+    <p>Cinq questionnaires indépendants. Les questions sont tirées dans un ordre différent
        à chaque passage, et la correction s'affiche après chaque réponse.</p>
   </section>
 
@@ -379,7 +380,7 @@ function question(){
   <div class="card">
     <div class="theme">${esc(q.t)}</div>
     <h2 class="q">${esc(q.q)}</h2>
-    ${q.i ? `<img class="qimg" src="images/${esc(q.i)}" alt="Illustration de la question" loading="lazy" id="qimg">` : ``}
+    ${q.i ? `<div class="imgbox" id="imgbox"><img class="qimg" src="images/${esc(q.i)}?q=${S.pos}" alt="Illustration de la question" id="qimg"></div>` : ``}
     ${q.m ? `<p class="hint">Plusieurs réponses sont attendues.</p>` : ``}
     <div class="opts" id="opts">
       ${q.o.map((o,k) => `
@@ -441,7 +442,7 @@ function valider(){
       <p>${esc(q.e)}</p>
     </div>`;
 
-  S.hist.push({ q:q.q, e:q.e, bon:bon,
+  S.hist.push({ q:q.q, e:q.e, bon:bon, t:q.t, n:q.n,
                 mien: mien.map(i=>q.o[i]).join(" · ") || "aucune réponse",
                 vrai: q.r.map(i=>q.o[i]).join(" · ") });
 
@@ -449,7 +450,16 @@ function valider(){
   $("#btnGo").textContent = dernier ? "Voir mon résultat" : "Question suivante";
   $("#btnGo").disabled = false;
   $("#btnGo").focus();
+  precharger(S.pos + 1);
   sauver();
+}
+
+/* Charge en avance l'image de la question suivante : au moment ou l'on
+   passe a la question, elle est deja en cache et s'affiche sans delai. */
+function precharger(i){
+  if (!S || !S.liste[i] || !S.liste[i].i) return;
+  const im = new Image();
+  im.src = "images/" + S.liste[i].i + "?q=" + i;
 }
 
 function suivant(){
@@ -490,6 +500,9 @@ function resultat(){
     <span class="badge ${reussi?'ok':'ko'}">${reussi ? `Seuil de ${m.seuil} % atteint` : `Seuil de ${m.seuil} % non atteint`}</span>
     <div class="acts" style="margin-top:20px">
       <button class="prim" id="btnMail">Envoyer par e-mail</button>
+      <button class="ghost" id="btnFichier">Télécharger le détail</button>
+    </div>
+    <div class="acts" style="margin-top:10px">
       <button class="ghost" id="btnHome">Retour aux questionnaires</button>
     </div>
   </div>
@@ -507,8 +520,9 @@ function resultat(){
       </div>`).join("")}
   </section>`;
 
-  $("#btnHome").addEventListener("click", () => { S = null; $("#subtitle").textContent = "Diagnostic de performance énergétique"; accueil(); });
+  $("#btnHome").addEventListener("click", () => { S = null; $("#subtitle").textContent = "DPE et audit énergétique"; accueil(); });
   $("#btnMail").addEventListener("click", () => envoyerMail(m, pct, total, reussi));
+  $("#btnFichier").addEventListener("click", () => telecharger(m, pct, total, reussi));
   window.scrollTo(0,0);
 }
 
@@ -516,24 +530,84 @@ function envoyerMail(m, pct, total, reussi){
   const s = lire();
   const rates = S.hist.filter(h => !h.bon);
   const sujet = `Entraînement MCTB — ${m.nom} — ${pct} %`;
-  let corps =
+  const tete =
     `${s.prenom} ${s.nom}\n` +
     `Questionnaire : ${m.nom}\n` +
     `Score : ${S.score}/${total} (${pct} %) — seuil ${m.seuil} % ${reussi ? "atteint" : "non atteint"}\n` +
     `Date : ${new Date().toLocaleDateString("fr-FR")}\n`;
+
+  // Version complete : chaque question ratee avec la reponse donnee et la bonne.
+  let corps = tete;
   if (rates.length){
     corps += `\nQuestions manquées (${rates.length}) :\n`;
-    rates.forEach((h,i) => { corps += `${i+1}. ${h.q}\n`; });
+    rates.forEach((h, i) => {
+      corps += `\n${i+1}. ${h.q}\n   Votre réponse : ${h.mien}\n   Réponse attendue : ${h.vrai}\n`;
+    });
   } else {
     corps += `\nAucune erreur.\n`;
   }
-  const url = `mailto:?subject=${encodeURIComponent(sujet)}&body=${encodeURIComponent(corps)}`;
-  if (url.length > 1800){
-    // mailto tronque au-dela d'environ 2000 caracteres selon les clients
-    const court = corps.split("\n").slice(0,5).join("\n") + `\n\n${rates.length} question(s) manquée(s). Le détail reste consultable à l'écran.`;
-    window.location.href = `mailto:?subject=${encodeURIComponent(sujet)}&body=${encodeURIComponent(court)}`;
-  } else {
-    window.location.href = url;
+
+  let url = `mailto:?subject=${encodeURIComponent(sujet)}&body=${encodeURIComponent(corps)}`;
+
+  // Les clients de messagerie tronquent au-dela d'environ 2000 caracteres.
+  // Au-dela, on envoie un resume et on invite a joindre le fichier detaille.
+  if (url.length > 1900){
+    let court = tete + `\nQuestions manquées (${rates.length}) :\n`;
+    rates.forEach((h, i) => { court += `${i+1}. ${h.q}\n`; });
+    court += `\nLe détail complet (réponses données et attendues) se trouve dans le fichier téléchargé depuis l'application.\n`;
+    url = `mailto:?subject=${encodeURIComponent(sujet)}&body=${encodeURIComponent(court)}`;
+  }
+  window.location.href = url;
+}
+
+/* Produit deux fichiers : un CSV lisible dans Excel et un JSON reutilisable
+   pour une future page de synthese d'equipe. */
+function telecharger(m, pct, total, reussi){
+  const s = lire();
+  const d = new Date();
+  const horo = d.toISOString().slice(0,10);
+  const base = `MCTB_${(s.nom||"resultat").replace(/[^\w]/g,"")}_${horo}`;
+
+  // --- CSV (separateur point-virgule, BOM pour Excel francais) ---
+  const q = v => '"' + String(v == null ? "" : v).replace(/"/g,'""') + '"';
+  const lignes = [
+    ["Prénom","Nom","Questionnaire","Date","Score","Total","Pourcentage","Seuil","Résultat"].map(q).join(";"),
+    [s.prenom||"", s.nom||"", m.nom, d.toLocaleDateString("fr-FR"),
+     S.score, total, pct+" %", m.seuil+" %", reussi?"Réussi":"À revoir"].map(q).join(";"),
+    "",
+    ["N°","Thème","Question","Votre réponse","Réponse attendue","Résultat","Explication"].map(q).join(";")
+  ];
+  S.hist.forEach((h,i) => {
+    lignes.push([i+1, h.t||"", h.q, h.mien, h.vrai, h.bon?"Juste":"Faux", h.e].map(q).join(";"));
+  });
+  fichier(base + ".csv", "\ufeff" + lignes.join("\r\n"), "text/csv;charset=utf-8");
+
+  // --- JSON ---
+  const donnees = {
+    prenom: s.prenom||"", nom: s.nom||"",
+    questionnaire: m.nom, date: d.toISOString(),
+    score: S.score, total: total, pourcentage: pct,
+    seuil: m.seuil, reussi: reussi,
+    reponses: S.hist.map((h,i) => ({
+      numero: i+1, reference: h.n||null, theme: h.t||"", question: h.q,
+      donnee: h.mien, attendue: h.vrai, juste: h.bon, explication: h.e
+    }))
+  };
+  setTimeout(() => fichier(base + ".json",
+    JSON.stringify(donnees, null, 2), "application/json;charset=utf-8"), 400);
+}
+
+function fichier(nom, contenu, type){
+  try {
+    const blob = new Blob([contenu], { type: type });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = nom;
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+  } catch(e){
+    alert("Le téléchargement n'a pas pu démarrer sur cet appareil.");
   }
 }
 
@@ -558,7 +632,7 @@ $("#lightbox").addEventListener("click", () => $("#lightbox").classList.remove("
 $("#btnQuit").addEventListener("click", () => {
   if (confirm("Quitter ce questionnaire ? Votre progression est conservée.")){
     S = null;
-    $("#subtitle").textContent = "Diagnostic de performance énergétique";
+    $("#subtitle").textContent = "DPE et audit énergétique";
     accueil();
   }
 });
