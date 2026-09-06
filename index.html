@@ -226,7 +226,7 @@ function majModule(i, val){
 /* ---------- utilitaires ---------- */
 const $ = sel => document.querySelector(sel);
 const esc = t => String(t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const LETTRES = "ABCD";
+const LETTRES = "ABCDEF";
 
 function melanger(arr){
   const a = arr.slice();
@@ -262,7 +262,7 @@ function accueil(){
   let html = `
   <section class="intro">
     <h2>Testez vos connaissances</h2>
-    <p>Cinq questionnaires indépendants. Les questions sont tirées dans un ordre différent
+    <p>Sept questionnaires indépendants. Les questions sont tirées dans un ordre différent
        à chaque passage, et la correction s'affiche après chaque réponse.</p>
   </section>
 
@@ -619,7 +619,7 @@ document.addEventListener("keydown", ev => {
   }
   if (!S || !S.liste) return;
   const q = S.liste[S.pos];
-  if (ev.key >= "1" && ev.key <= "4"){
+  if (ev.key >= "1" && ev.key <= "6"){
     const k = +ev.key - 1;
     if (k < q.o.length && !S.valide){ choisir(k); ev.preventDefault(); }
   } else if (ev.key === "Enter"){

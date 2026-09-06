@@ -1,5 +1,5 @@
 ENTRAINEMENT MCTB - QUESTIONNAIRES
-Version 3 - 5 questionnaires, 114 questions
+Version 7 - 7 questionnaires, 154 questions
 ===========================================
 
 CONTENU DU DOSSIER
@@ -10,6 +10,31 @@ images/               Les illustrations des questions.
 manifest.json         Permet l'installation en icone sur telephone et PC.
 sw.js                 Fonctionnement hors connexion.
 icone-*.png           Icones de l'application.
+
+
+NOUVEAUTES DE LA VERSION 7
+--------------------------
+- Les ponts thermiques sont scindes en deux questionnaires de 20 :
+  "en coupe" (coupes simples et murs enterres) et "plan et volume"
+  (vues de dessus et axonometries). Chacun se joue en entier.
+- Sept questions redondantes ont ete retirees : meme configuration
+  et meme reponse qu'une autre deja presente.
+- Correction des vues en plan : le segment orange suivait une
+  ordonnee fixe et pouvait se retrouver a l'ecart de tout mur.
+  Il longe desormais une facade reelle du contour.
+
+
+NOUVEAUTES DE LA VERSION 4
+--------------------------
+- Nouveau questionnaire "Ponts thermiques - reperage" : 15 coupes de
+  batiment, une jonction reperee en orange, a identifier parmi
+  Pont bas / Inter bas / Inter haut / Pont haut / Aucun.
+  Le type d'un pont intermediaire depend du niveau que l'on saisit :
+  c'est precisement ce que l'exercice fait travailler.
+- Les questions acceptent desormais jusqu'a 6 options (colonne
+  "Option E" ajoutee au classeur). Le clavier repond de 1 a 6.
+- Les schemas sont au format SVG : 60 Ko pour les 15, et nets a
+  n'importe quelle taille d'ecran.
 
 
 NOUVEAUTES DE LA VERSION 2
@@ -33,7 +58,7 @@ MISE A JOUR SUR GITHUB
 ----------------------
 Remplacez dans le depot : index.html, questionnaires.json, sw.js et le
 dossier images. Le numero de cache dans sw.js est deja passe a
-"mctb-quiz-v3" : les appareils deja installes recuperent la nouvelle
+"mctb-quiz-v7" : les appareils deja installes recuperent la nouvelle
 version a la prochaine ouverture connectee.
 
 A chaque nouvelle mise a jour, incrementez ce numero (v3, v4...).
@@ -48,6 +73,9 @@ Tout se passe dans MCTB_Banque_Questions.xlsx.
    Questionnaires : il apparaitra alors dans la liste deroulante.
 3. Regenerez questionnaires.json.
 4. Remplacez le fichier sur GitHub et incrementez le cache dans sw.js.
+
+Un meme enonce avec une image differente compte comme une question
+distincte : c'est ce qui permet les series de reperage sur schema.
 
 Colonne "Questions a tirer" :
    0  = toutes les questions, dans un ordre melange
