@@ -1,5 +1,5 @@
 ENTRAINEMENT MCTB - QUESTIONNAIRES
-Version 10 - 9 questionnaires, 178 questions
+Version 11 - 9 questionnaires, 178 questions
 ===========================================
 
 CONTENU DU DOSSIER
@@ -10,6 +10,22 @@ images/               Les illustrations des questions.
 manifest.json         Permet l'installation en icone sur telephone et PC.
 sw.js                 Fonctionnement hors connexion.
 icone-*.png           Icones de l'application.
+
+
+NOUVEAUTES DE LA VERSION 11
+---------------------------
+- Correction d'un bug d'affichage : la cinquieme option pouvait
+  s'afficher "undefined" sur un poste qui avait deja ouvert
+  l'application auparavant.
+  Cause : le service worker allait chercher questionnaires.json sur
+  le reseau mais servait index.html depuis le cache. Les nouvelles
+  questions a cinq options se retrouvaient donc traitees par une
+  ancienne version du code, qui n'en gerait que quatre.
+  Desormais la page ET les donnees passent par le reseau d'abord,
+  avec repli sur le cache hors connexion : le code et les questions
+  ne peuvent plus se desynchroniser.
+- Garde-fou complementaire : une lettre manquante laisse la pastille
+  vide au lieu d'ecrire "undefined".
 
 
 NOUVEAUTES DE LA VERSION 10
@@ -86,7 +102,7 @@ MISE A JOUR SUR GITHUB
 ----------------------
 Remplacez dans le depot : index.html, questionnaires.json, sw.js et le
 dossier images. Le numero de cache dans sw.js est deja passe a
-"mctb-quiz-v10" : les appareils deja installes recuperent la nouvelle
+"mctb-quiz-v11" : les appareils deja installes recuperent la nouvelle
 version a la prochaine ouverture connectee.
 
 A chaque nouvelle mise a jour, incrementez ce numero (v3, v4...).

@@ -107,7 +107,7 @@ button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
   background:var(--white);font-size:15.5px;line-height:1.4;transition:border-color .12s,background .12s}
 .opt:hover:not(:disabled){border-color:var(--blue3);background:var(--bg)}
 .opt:disabled{cursor:default}
-.box{flex:0 0 auto;width:25px;height:25px;border:1.5px solid var(--muted);
+.box{flex:0 0 auto;width:25px;height:25px;overflow:hidden;border:1.5px solid var(--muted);
   display:grid;place-items:center;font-size:13px;font-weight:700;color:var(--muted);
   background:var(--white)}
 .opt.multi .box{border-radius:6px}
@@ -385,7 +385,7 @@ function question(){
     <div class="opts" id="opts">
       ${q.o.map((o,k) => `
         <button class="opt ${q.m?'multi':''}" data-k="${k}">
-          <span class="box">${q.m ? '' : LETTRES[k]}</span>
+          <span class="box">${q.m ? '' : (LETTRES[k] || '')}</span>
           <span>${esc(o)}</span>
         </button>`).join("")}
     </div>
