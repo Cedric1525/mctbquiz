@@ -1,5 +1,5 @@
 ENTRAINEMENT MCTB - QUESTIONNAIRES
-Version 9 - 9 questionnaires, 178 questions
+Version 10 - 9 questionnaires, 178 questions
 ===========================================
 
 CONTENU DU DOSSIER
@@ -10,6 +10,13 @@ images/               Les illustrations des questions.
 manifest.json         Permet l'installation en icone sur telephone et PC.
 sw.js                 Fonctionnement hors connexion.
 icone-*.png           Icones de l'application.
+
+
+NOUVEAUTES DE LA VERSION 10
+---------------------------
+- L'icone porte desormais un Q (quiz) au lieu du M, pour la
+  distinguer du lanceur "MCTB Secretariat" qui garde le M.
+  Meme charte : carre bleu, bande orange, lettre blanche.
 
 
 NOUVEAUTES DE LA VERSION 9
@@ -79,7 +86,7 @@ MISE A JOUR SUR GITHUB
 ----------------------
 Remplacez dans le depot : index.html, questionnaires.json, sw.js et le
 dossier images. Le numero de cache dans sw.js est deja passe a
-"mctb-quiz-v9" : les appareils deja installes recuperent la nouvelle
+"mctb-quiz-v10" : les appareils deja installes recuperent la nouvelle
 version a la prochaine ouverture connectee.
 
 A chaque nouvelle mise a jour, incrementez ce numero (v3, v4...).
