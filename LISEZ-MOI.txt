@@ -1,5 +1,5 @@
 ENTRAINEMENT MCTB - QUESTIONNAIRES
-Version 7 - 7 questionnaires, 154 questions
+Version 9 - 9 questionnaires, 178 questions
 ===========================================
 
 CONTENU DU DOSSIER
@@ -11,6 +11,27 @@ manifest.json         Permet l'installation en icone sur telephone et PC.
 sw.js                 Fonctionnement hors connexion.
 icone-*.png           Icones de l'application.
 
+
+NOUVEAUTES DE LA VERSION 9
+--------------------------
+- "Controle certification" reequilibre : les dix questions avaient
+  toutes la meme reponse, Faux. Cinq enonces ont ete inverses pour
+  que la reponse attendue soit Vrai, a contenu pedagogique egal.
+  Deux des cinq restantes ont ete reformulees en affirmations
+  absolues ("doit systematiquement", "ne peut jamais") qui sonnent
+  rigoureuses mais sont fausses : sans cela, on remplacait un
+  reflexe par un autre, celui de repondre Vrai des que l'enonce
+  semble prudent.
+
+
+NOUVEAUTES DE LA VERSION 8
+--------------------------
+- Deux questionnaires ajoutes : "Ponts Thermique new" (14 questions
+  sur une meme coupe, le point bleu se deplacant d'une jonction a
+  l'autre) et "Controle certification" (10 questions Vrai/Faux).
+- Les 14 images ont ete recompressees : 1480 Ko a l'origine, 335 Ko
+  apres quantification a 48 couleurs, sans perte visible sur les
+  traits fins ni sur les textes.
 
 NOUVEAUTES DE LA VERSION 7
 --------------------------
@@ -58,7 +79,7 @@ MISE A JOUR SUR GITHUB
 ----------------------
 Remplacez dans le depot : index.html, questionnaires.json, sw.js et le
 dossier images. Le numero de cache dans sw.js est deja passe a
-"mctb-quiz-v7" : les appareils deja installes recuperent la nouvelle
+"mctb-quiz-v9" : les appareils deja installes recuperent la nouvelle
 version a la prochaine ouverture connectee.
 
 A chaque nouvelle mise a jour, incrementez ce numero (v3, v4...).
